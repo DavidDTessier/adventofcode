@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 	"io"
+	"regexp"
+	"strconv"
 )
 
 type Passport struct {
@@ -29,6 +31,38 @@ func (p Passport) IsAllFieldsRequired() (bool) {
 
 func (p Passport) Is7FieldsRequired() (bool) {
 	return (p.BirthYear != "" &&  p.IssueYear != "" && p.ExpirationYear != "" && p.Height != "" && p.EyeColor != "" && p.PassportId != ""  && p.HairColor != "")
+}
+
+func (p Passport) IsValidPassportStrict() (bool) {
+	var validBirthYear = p.BirthYear != "" && (ConvertToInt(p.BirthYear) >= 1920 && ConvertToInt(p.BirthYear) < 2003)
+	var validExpYear = p.ExpirationYear != "" && (ConvertToInt(p.ExpirationYear) >= 2020 && ConvertToInt(p.ExpirationYear) < 2031)
+	var validIssueYear = p.IssueYear != "" && (ConvertToInt(p.IssueYear) >= 2010 && ConvertToInt(p.IssueYear) < 2021)
+	var validHieght = p.Height != "" && (RegexMatch("^(1([5-8][0-9]|9[0-3])cm|(59|6[0-9]|7[0-6])in)$", p.Height))
+	var validHairColor = p.HairColor != "" && (RegexMatch("^#[0-9a-f]{6}$", p.HairColor))
+	var validEyeColor = p.EyeColor != "" && (Contains([]string { "amb", "blu", "brn", "gry", "grn", "hzl", "oth" }, p.EyeColor))
+	var validPassPortId = p.PassportId != "" && (RegexMatch("^[0-9]{9}$" , p.PassportId));
+
+	return validBirthYear && validExpYear && validIssueYear && validHieght && validHairColor && validEyeColor && validPassPortId;
+}
+
+func ConvertToInt(value string) (int) {
+	intVal, _ := strconv.Atoi(value)
+	return intVal
+}
+
+func RegexMatch(pattern string, value string) (bool) {
+	match, _ := regexp.MatchString(pattern, value)
+	return match
+}
+
+func Contains(strArray []string, value string) (bool) {
+	for _, item := range strArray {
+		if (item == value) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func LoadPassports(path string) ([]Passport) {
@@ -137,15 +171,23 @@ func main() {
 	}
 
 	passports := LoadPassports(curPath + "\\day4input.dat")
-
+	fmt.Println("Part 1: -----\n\r")
 	var totalValidPassports int
+	var totalValidStrictPassports int
 	for _, p := range passports {
 		if (p.IsValidPassport()) {
 			totalValidPassports++
 		}
+
+		if (p.IsValidPassportStrict()) {
+			totalValidStrictPassports++
+		}
 	}
 
 	fmt.Println("Total Valid Passports %d", totalValidPassports)
+	fmt.Println("\n\rPart 2: -----\n\r")
+	fmt.Println("Total Valid Strict Passports %d", totalValidStrictPassports)
 
 	
 }
+
