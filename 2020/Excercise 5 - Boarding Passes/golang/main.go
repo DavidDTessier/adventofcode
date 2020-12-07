@@ -97,15 +97,27 @@ func main() {
 
 	bps := LoadBoardingPasses(curPath + "/input.dat")
 
+	fmt.Println("Part 1: ----\n\r")
 	var seatIds []int
+	var sumSeatIds int = 0
 	for _, b := range bps {
 		var m int64 = b.GetSeatId() << 0
 		n := int(m)
+		sumSeatIds += n
 		seatIds = append(seatIds, n)
 	}
 
 	sort.Ints(seatIds)
 	highest := seatIds[len(seatIds)-1]
 
-	fmt.Println("Total Valid Passports %d", highest)
+	fmt.Println("Highest Seat Number: %d", highest)
+	fmt.Println("\n\rPart 2: ----\n\r")
+
+	var minSeat = seatIds[0] - 1;
+	var maxSeat = highest
+
+	var possibleSeat = ((maxSeat * (maxSeat + 1) / 2) - (minSeat * (minSeat + 1) / 2) - sumSeatIds);
+	fmt.Println("Possible Seat Number: %d", possibleSeat)
+
+
 }
