@@ -38,7 +38,7 @@ namespace CustomsCheckApp
 
         static IList<Group> LoadCustomsAnswers()
         {
-            var inputFilePath = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location) + "/input.dat";
+            var inputFilePath = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location) + Path.DirectorySeparatorChar + "input.dat";
 
             var lines = File.ReadAllLines(inputFilePath);
 
