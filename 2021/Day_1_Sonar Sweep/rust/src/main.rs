@@ -68,7 +68,7 @@ fn process_sliding_window_comparison(data: &Vec::<i32>) {
 
 // This is the main function
 fn main() {
-    let filename = "../input/input.dat";
+    let filename = "input/input.dat";
     let vec = read(filename);
     let data = vec.iter().next().unwrap(); // get the vector from the result
 
